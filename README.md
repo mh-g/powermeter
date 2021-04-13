@@ -8,4 +8,9 @@ The RRD database needs to have the following columns: "paid", "excess", and "del
 
 Notice: For longer periods, there may be both "paid" and "excess" data for the same time slice.
 
+Depends / tested on:
+- Python 3.7.3
+- pyserial 3.4
+- rrdtool 0.1.15
+
 I obtain the raw data using https://github.com/mh-g/Arduino-iec62056-21
