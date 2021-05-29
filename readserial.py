@@ -14,19 +14,20 @@ port = serial.Serial ("/dev/ttyUSB0", 115200, timeout=1)
 # ================================================================
 
 def parse (sentence):
-    obis = re.match("\d-\d*:\d*\.\d*\.\d*", sentence)
-    if obis == None:
-        return None, None, None
-    data = sentence[obis.end() + 5:len(sentence) - 1]
-    value = ""
-    unit = ""
-    if data.find("*") > 0:
-        value = data[:data.find("*")]
-        unit = data[data.find("*") + 1:]
-    else:
-        value = data
-    print (obis.group(), value, unit)
-    return (obis.group(), value, unit)
+    if re.match("^1-0:\d.\d.\d\*255\(\d\d\d\d\d\d.\d\d\d\d\*kWh\)$", sentence):
+        obis = re.match("\d-\d*:\d*\.\d*\.\d*", sentence)
+        if obis == None:
+            return None, None, None
+        data = sentence[obis.end() + 5:len(sentence) - 1]
+        value = ""
+        unit = ""
+        if data.find("*") > 0:
+            value = data[:data.find("*")]
+            unit = data[data.find("*") + 1:]
+        else:
+            value = data
+        return (obis.group(), value, unit)
+    return None, None, None
 
 def updaterrd (paid, excess):
     rrdtool.update(database, "N:%f:%f:%f" % (paid, excess, paid - excess))
@@ -71,3 +72,4 @@ while True:
                             updaterrd (paid, excess)
                     except:
                         print ("Unexpected error with excess:", sys.exc_info()[0])
+
