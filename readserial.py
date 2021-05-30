@@ -35,7 +35,9 @@ def updaterrd (paid, excess):
 # main program
 
 paid = 0.0
+prevPaid = paid
 excess = 0.0
+prevExcess = excess
 gotPaid = False
 gotExcess = False
 while True:
@@ -49,7 +51,15 @@ while True:
                 if obis == "1-0:1.8.0":
                     try:
                         paid = (float)(valuestr)
-                        gotPaid = True
+                        if (prevPaid < 0.001):
+                            print ("First paid:", paid)
+                            prevPaid = paid
+                            gotPaid = True
+                        if (paid - prevPaid) < 0.1:
+                            gotPaid = True
+                            prevPaid = paid
+                        else:
+                            gotPaid = False
                     except:
                         print ("parse error with paid", valuestr)
                         pass
@@ -63,7 +73,15 @@ while True:
                 if obis == "1-0:2.8.0":
                     try:
                         excess = (float)(valuestr)
-                        gotExcess = True
+                        if (prevExcess < 0.001):
+                            print ("First excess:", excess)
+                            prevExcess = excess
+                            gotExcess = True
+                        if (excess - prevExcess) < 0.1:
+                            gotExcess = True
+                            prevExcess = excess
+                        else:
+                            gotExcess = False
                     except:
                         print ("parse error with excess", valuestr)
                         pass
@@ -72,4 +90,3 @@ while True:
                             updaterrd (paid, excess)
                     except:
                         print ("Unexpected error with excess:", sys.exc_info()[0])
-
